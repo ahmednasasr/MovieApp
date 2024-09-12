@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:movieapp/manger/main_provider.dart';
@@ -70,10 +71,11 @@ class HomeScreen extends StatelessWidget {
                                           color: Colors.white, width: 2),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
-                                    child: Image.network(
-                                      "https://image.tmdb.org/t/p/w500${movie.posterPath}",
-                                      fit: BoxFit.cover,
+                                    child: CachedNetworkImage(
+                                      imageUrl: "https://image.tmdb.org/t/p/w500${movie.posterPath}",
+                                      errorWidget: (context, url, error) => Icon(Icons.error),
                                     ),
+
                                   ),
                                 ),
                               ],
@@ -154,9 +156,10 @@ class HomeScreen extends StatelessWidget {
                                       Container(
                                         width: double.infinity,
                                         height: 180,
-                                        child: Image.network(
-                                          "https://image.tmdb.org/t/p/w500${movie.posterPath ?? ''}",
-                                        ),
+                                      child: CachedNetworkImage(
+                                        imageUrl:"https://image.tmdb.org/t/p/w500${movie.posterPath ?? ''}",
+                                        errorWidget: (context, url, error) => Icon(Icons.error),
+                                      ),
                                       ),
                                       InkWell(
                                         onTap: () {
@@ -228,8 +231,9 @@ class HomeScreen extends StatelessWidget {
                                         Container(
                                           width: double.infinity,
                                           height: 150,
-                                          child: Image.network(
-                                            "https://image.tmdb.org/t/p/w500${e.posterPath ?? ''}",
+                                          child: CachedNetworkImage(
+                                            imageUrl:"https://image.tmdb.org/t/p/w500${e.posterPath ?? ''}",
+                                            errorWidget: (context, url, error) => Icon(Icons.error),
                                           ),
                                         ),
                                         InkWell(
