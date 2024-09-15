@@ -2,8 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart'as http;
+import 'package:movieapp/models/details_model.dart';
+import 'package:movieapp/models/morelikethis_model.dart';
 import 'package:movieapp/models/realese_model.dart';
 import 'package:movieapp/models/recommendation_model.dart';
+import 'package:movieapp/screens/details_screen.dart';
 import '../models/movie_header_model.dart';
 
 class mainProvider extends ChangeNotifier{
@@ -68,6 +71,36 @@ class mainProvider extends ChangeNotifier{
     var json = jsonDecode(response.body);
 
     return RecommendationModel.fromJson(json);
+  }
+
+
+Future<Detailsmodel> getDetails(int movieId)async {
+
+    Uri url = Uri.parse("https://api.themoviedb.org/3/movie/$movieId?language=en-US&api_key=8eb3a86e7c546f5f0dfa5f6341dd0c0c");
+
+    http.Response response = await http.get(url,
+      headers: {
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4ZWIzYTg2ZTdjNTQ2ZjVmMGRmYTVmNjM0MWRkMGMwYyIsIm5iZiI6MTcyNjA2OTAyNC43ODEwOTQsInN1YiI6IjY2ZTFiNmRhZTNmNGYyMTQwY2NjOTVmNiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.6qwsjHE_Gil15HR_4xhJgV8U6PDXpKOetblNIKQJdrk',
+        'accept': 'application/json',
+      },
+    );
+    var json = jsonDecode(response.body);
+
+    return Detailsmodel.fromJson(json);
+  }
+  Future<MorelikethisModel> getMoreLikeThis(int movieId)async {
+
+    Uri url = Uri.parse("https://api.themoviedb.org/3/movie/$movieId/similar?language=en-US&page=1&api_key=8eb3a86e7c546f5f0dfa5f6341dd0c0c");
+
+    http.Response response = await http.get(url,
+      headers: {
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4ZWIzYTg2ZTdjNTQ2ZjVmMGRmYTVmNjM0MWRkMGMwYyIsIm5iZiI6MTcyNjA2OTAyNC43ODEwOTQsInN1YiI6IjY2ZTFiNmRhZTNmNGYyMTQwY2NjOTVmNiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.6qwsjHE_Gil15HR_4xhJgV8U6PDXpKOetblNIKQJdrk',
+        'accept': 'application/json',
+      },
+    );
+    var json = jsonDecode(response.body);
+
+    return MorelikethisModel.fromJson(json);
   }
 
 
