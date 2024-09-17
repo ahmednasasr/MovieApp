@@ -10,17 +10,18 @@ class LayoutScreen extends StatelessWidget {
   static const String routename="homescreen";
    LayoutScreen({super.key});
 
-  List<Widget> screens=[
-    HomeScreen(),
-    SearchScreen(),
-    BrowseScreen(),
-    WatchlistScreen()
-  ];
 
   @override
   Widget build(BuildContext context) {
-    var theme=Theme.of(context);
     var provider=Provider.of<mainProvider>(context);
+    List<Widget> screens=[
+      HomeScreen(),
+      SearchScreen(),
+      BrowseScreen(),
+      WatchlistScreen()
+    ];
+
+    var theme=Theme.of(context);
     return  Scaffold(
           bottomNavigationBar: BottomNavigationBar(
             onTap: (value){

@@ -8,6 +8,8 @@ import 'package:movieapp/models/realese_model.dart';
 import 'package:movieapp/models/recommendation_model.dart';
 import 'package:provider/provider.dart';
 
+import '../models/movies_search.dart';
+
 class DetailsScreen extends StatefulWidget {
   static const String routename = "details";
   const DetailsScreen({super.key});
@@ -30,6 +32,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
       title = arguments.title;
     } else if (arguments is RecommendationResults) {
       movieId = arguments.id;
+      title = arguments.title;
+    }
+    else if (arguments is MovieResult) {
+      movieId = arguments.id as int?;
       title = arguments.title;
     }
 
