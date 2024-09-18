@@ -39,6 +39,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
       movieId = arguments.id as int?;
       title = arguments.title;
     }
+    else if (arguments is MovieResult) {
+      movieId = arguments.id as int?;
+      title = arguments.title;
+    }
 
     if (movieId == null) {
       return Scaffold(

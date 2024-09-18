@@ -88,7 +88,7 @@ class MovieSearchDelegate extends SearchDelegate {
               var result = results[index];
               return InkWell(
                 onTap: (){
-                  Navigator.pushNamed(context, DetailsScreen.routename,arguments: results
+                  Navigator.pushNamed(context, DetailsScreen.routename,arguments: results[index]
                   );
                 },
                 child: Card(
