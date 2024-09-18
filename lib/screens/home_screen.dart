@@ -12,6 +12,7 @@ import '../models/realese_model.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
+
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<mainProvider>(context);
@@ -161,7 +162,9 @@ class HomeScreen extends StatelessWidget {
                                 child: Container(
                                     color: Color(0xff282A28),
                                     child: Column(children: [
-                                      Stack(clipBehavior: Clip.none, children: [
+                                      Stack(
+                                          clipBehavior: Clip.none,
+                                          children: [
                                         Container(
                                           width: double.infinity,
                                           height: 180,
@@ -173,7 +176,6 @@ class HomeScreen extends StatelessWidget {
                                         InkWell(
                                           onTap: () {
                                             provider.OnSaved(movie);
-                                            print(movie.id);
                                           },
                                           child: Icon(
                                             movie.isSaved

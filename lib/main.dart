@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movieapp/core/theme.dart';
 import 'package:movieapp/manger/main_provider.dart';
+import 'package:movieapp/screens/details_details_screen.dart';
 import 'package:movieapp/screens/details_screen.dart';
 import 'package:movieapp/screens/layout_screen.dart';
 import 'package:movieapp/splash/splash_screen.dart';
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
         SplashScreen.routename:(_)=>SplashScreen(),
         LayoutScreen.routename:(_)=>LayoutScreen(),
         DetailsScreen.routename:(_)=>DetailsScreen(),
+        DetailsDetailsScreen.routename:(_)=>DetailsDetailsScreen(),
       },
       title: 'Flutter Demo',
       theme: AppTheme.theme,

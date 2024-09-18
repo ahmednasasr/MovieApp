@@ -9,6 +9,7 @@ import 'package:movieapp/models/recommendation_model.dart';
 import 'package:provider/provider.dart';
 
 import '../models/movies_search.dart';
+import 'details_details_screen.dart';
 
 class DetailsScreen extends StatefulWidget {
   static const String routename = "details";
@@ -93,30 +94,47 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         Text(
                           movieDetails?.title ?? "",
                           style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
                             color: Colors.white,
                           ),
                         ),
                         Text(
                           movieDetails?.releaseDate ?? "",
                           style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
                             color: Colors.white,
                           ),
                         ),
+                        SizedBox(height: 5,),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              height: 200,
-                              width: 130,
-                              child: Image.network(
-                                "https://image.tmdb.org/t/p/w500${movieDetails?.posterPath ?? ""}",
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+                            // Container(
+                            //   height: 200,
+                            //   width: 130,
+                            //   child: Image.network(
+                            //     "https://image.tmdb.org/t/p/w500${movieDetails?.posterPath ?? ""}",
+                            //     fit: BoxFit.cover,
+                            //   ),
+                            // ),
+                            Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  Container(
+                                    height: 200,
+                                    width: 130,
+                                    child: Image.network(
+                                      "https://image.tmdb.org/t/p/w500${movieDetails?.posterPath ?? ""}",
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                   Icon(
+                                     Icons.add_box,
+                                      size: 30,
+                                    ),
+                                ]),
                             Expanded(
                               child: Column(
                                 children: [
@@ -195,51 +213,56 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                       items: results.map((e) {
                                         return Builder(
                                           builder: (BuildContext context) {
-                                            return Container(
-                                                color: Color(0xff282A28),
-                                                child: Column(children: [
-                                                  Stack(clipBehavior: Clip.none, children: [
-                                                    Container(
-                                                      width: double.infinity,
-                                                      height: 150,
-                                                      child: CachedNetworkImage(
-                                                        imageUrl:"https://image.tmdb.org/t/p/w500${e.posterPath ?? ''}",
-                                                        errorWidget: (context, url, error) => Icon(Icons.error),
+                                            return InkWell(
+                                              onTap: (){
+                                                Navigator.pushNamed(context, DetailsDetailsScreen.routename,arguments: e);
+                                              },
+                                              child: Container(
+                                                  color: Color(0xff282A28),
+                                                  child: Column(children: [
+                                                    Stack(clipBehavior: Clip.none, children: [
+                                                      Container(
+                                                        width: double.infinity,
+                                                        height: 150,
+                                                        child: CachedNetworkImage(
+                                                          imageUrl:"https://image.tmdb.org/t/p/w500${e.posterPath ?? ''}",
+                                                          errorWidget: (context, url, error) => Icon(Icons.error),
+                                                        ),
                                                       ),
+                                                     Icon(
+                                                          Icons.bookmark,
+                                                          color:  Color(0xff514F4F),
+                                                        ),
+                                                    ]),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                      children: [
+                                                        Icon(
+                                                          Icons.star,
+                                                          color: Colors.yellowAccent,
+                                                        ),
+                                                        Text(
+                                                          "${e.voteAverage}".substring(0, 3),
+                                                          style:
+                                                          TextStyle(color: Colors.white),
+                                                        )
+                                                      ],
                                                     ),
-                                                   Icon(
-                                                        Icons.bookmark,
-                                                        color:  Color(0xff514F4F),
-                                                      ),
-                                                  ]),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.star,
-                                                        color: Colors.yellowAccent,
-                                                      ),
-                                                      Text(
-                                                        "${e.voteAverage}".substring(0, 3),
-                                                        style:
-                                                        TextStyle(color: Colors.white),
-                                                      )
-                                                    ],
-                                                  ),
-                                                  Expanded(
-                                                      child: Text(
-                                                        e.title ?? "",
-                                                        style: TextStyle(
-                                                            color: Colors.white, fontSize: 15),
-                                                      )),
-                                                  Expanded(
-                                                      child: Text(
-                                                        e.releaseDate ?? "".substring(0, 10),
-                                                        style: TextStyle(
-                                                            color: Colors.white, fontSize: 13),
-                                                      )),
-                                                ]));
+                                                    Expanded(
+                                                        child: Text(
+                                                          e.title ?? "",
+                                                          style: TextStyle(
+                                                              color: Colors.white, fontSize: 15),
+                                                        )),
+                                                    Expanded(
+                                                        child: Text(
+                                                          e.releaseDate ?? "".substring(0, 10),
+                                                          style: TextStyle(
+                                                              color: Colors.white, fontSize: 13),
+                                                        )),
+                                                  ])),
+                                            );
                                           },
                                         );
                                       }).toList(),
