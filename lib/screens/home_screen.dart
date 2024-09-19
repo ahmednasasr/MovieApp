@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +33,7 @@ class HomeScreen extends StatelessWidget {
                   List<Results> results = snapshot.data?.results ?? [];
                   return CarouselSlider(
                     options: CarouselOptions(
+                      autoPlay:true,
                       height: 340.0,
                       viewportFraction: 1.0,
                       enableInfiniteScroll: true,

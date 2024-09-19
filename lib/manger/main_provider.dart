@@ -1,17 +1,19 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart'as http;
 import 'package:movieapp/models/details_model.dart';
 import 'package:movieapp/models/morelikethis_model.dart';
 import 'package:movieapp/models/movies_search.dart';
 import 'package:movieapp/models/realese_model.dart';
 import 'package:movieapp/models/recommendation_model.dart';
-import 'package:movieapp/screens/details_screen.dart';
+import '../apis/api_manger.dart';
+import '../models/browse_categories.dart';
 import '../models/movie_header_model.dart';
 
 class mainProvider extends ChangeNotifier{
   int selectedTab =0;
+  bool watched =false;
   final List<MovieResult> movieresult = [];
 
   onSelectedTap(value){
@@ -53,11 +55,13 @@ class mainProvider extends ChangeNotifier{
     print('isSaved: ${movie.isSaved}');
   notifyListeners();
   }
+
   OnSavedRecommendation(RecommendationResults movie) {
     movie.isSavedRecomm =! movie.isSavedRecomm;
     print('isSaved: ${movie.isSavedRecomm}');
   notifyListeners();
   }
+  List<BrowseGenres> browsecategore =[];
 
 
  Future<RecommendationModel> getRecommendation()async {
@@ -117,6 +121,25 @@ Future<Detailsmodel> getDetails(int movieId)async {
     var json = jsonDecode(response.body);
 
     return MoviesSearch.fromJson(json);
+  }
+
+  Future<BrowseCategories> getBrowesCategories()async {
+    Uri url =Uri.parse("https://api.themoviedb.org/3/genre/movie/list?language=en");
+    http.Response response = await http.get(url,
+      headers: {
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4ZWIzYTg2ZTdjNTQ2ZjVmMGRmYTVmNjM0MWRkMGMwYyIsIm5iZiI6MTcyNjA2OTAyNC43ODEwOTQsInN1YiI6IjY2ZTFiNmRhZTNmNGYyMTQwY2NjOTVmNiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.6qwsjHE_Gil15HR_4xhJgV8U6PDXpKOetblNIKQJdrk',
+        'accept': 'application/json',
+      },
+    );
+    var json = jsonDecode(response.body);
+
+    return BrowseCategories.fromJson(json);
+  }
+
+  Future<void> getBrowse()async{
+   var date =await getBrowesCategories();
+   browsecategore = date.genres??[];
+   notifyListeners();
   }
 
 
