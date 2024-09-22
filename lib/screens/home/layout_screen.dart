@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:movieapp/manger/main_provider.dart';
-import 'package:movieapp/screens/browse_screen.dart';
-import 'package:movieapp/screens/home_screen.dart';
-import 'package:movieapp/screens/search_screen.dart';
+import 'package:movieapp/screens/browse/browse_screen.dart';
+import 'package:movieapp/screens/home/home_screen.dart';
+import 'package:movieapp/screens/search/search_screen.dart';
 import 'package:movieapp/screens/watchlist_screen.dart';
 import 'package:provider/provider.dart';
 

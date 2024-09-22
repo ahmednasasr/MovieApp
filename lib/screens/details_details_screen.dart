@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movieapp/apis/api_manger.dart';
 import 'package:movieapp/manger/main_provider.dart';
 import 'package:movieapp/models/recommendation_model.dart';
 import 'package:provider/provider.dart';
@@ -49,7 +50,7 @@ class _DetailsDetailsScreenState extends State<DetailsDetailsScreen> {
       ),
       body: SingleChildScrollView(
         child: FutureBuilder(
-          future: provider.getDetails(movieId),
+          future: ApiManger.getDetails(movieId),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());

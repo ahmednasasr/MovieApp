@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movieapp/apis/api_manger.dart';
 import 'package:movieapp/models/movies_search.dart';
 import 'package:movieapp/screens/details_screen.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +32,7 @@ class MovieSearchDelegate extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     return FutureBuilder<MoviesSearch>(
-      future: Provider.of<mainProvider>(context, listen: false).movieSearch(query), // استدعاء movieSearch من المزود
+      future: ApiManger.movieSearch(query),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
@@ -69,7 +70,7 @@ class MovieSearchDelegate extends SearchDelegate {
     }
 
     return FutureBuilder<MoviesSearch>(
-      future: Provider.of<mainProvider>(context, listen: false).movieSearch(query),
+      future: ApiManger.movieSearch(query),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());

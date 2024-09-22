@@ -1,12 +1,15 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart'as http;
+import 'package:movieapp/models/browse_movies.dart';
 import 'package:movieapp/models/details_model.dart';
 import 'package:movieapp/models/morelikethis_model.dart';
 import 'package:movieapp/models/movies_search.dart';
 import 'package:movieapp/models/realese_model.dart';
 import 'package:movieapp/models/recommendation_model.dart';
+import 'package:movieapp/services/firebase.dart';
 import '../apis/api_manger.dart';
 import '../models/browse_categories.dart';
 import '../models/movie_header_model.dart';
@@ -14,132 +17,94 @@ import '../models/movie_header_model.dart';
 class mainProvider extends ChangeNotifier{
   int selectedTab =0;
   bool watched =false;
-  final List<MovieResult> movieresult = [];
+  List<RecommendationResults> savedmovie = [];
+   List<RecommendationResults> recommendationMovie=[];
+  List<BrowseGenres> browsecategore =[];
+  List<browseMoviesResult> browsemovieresult=[];
+  Map<int ,bool> watchedMovies ={};
+
+
+
 
   onSelectedTap(value){
     selectedTab=value;
     notifyListeners();
   }
 
-   Future<MovieHeaders> getPopular()async {
-
-    Uri url = Uri.parse("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc");
-
-    http.Response response = await http.get(url,
-      headers: {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4ZWIzYTg2ZTdjNTQ2ZjVmMGRmYTVmNjM0MWRkMGMwYyIsIm5iZiI6MTcyNjA2OTAyNC43ODEwOTQsInN1YiI6IjY2ZTFiNmRhZTNmNGYyMTQwY2NjOTVmNiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.6qwsjHE_Gil15HR_4xhJgV8U6PDXpKOetblNIKQJdrk',
-        'accept': 'application/json',
-      },
-    );
-    var json = jsonDecode(response.body);
-
-    return MovieHeaders.fromJson(json);
-  }
-  Future<RealeseModel> getRealese()async {
-
-    Uri url = Uri.parse("https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1");
-
-    http.Response response = await http.get(url,
-      headers: {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4ZWIzYTg2ZTdjNTQ2ZjVmMGRmYTVmNjM0MWRkMGMwYyIsIm5iZiI6MTcyNjA2OTAyNC43ODEwOTQsInN1YiI6IjY2ZTFiNmRhZTNmNGYyMTQwY2NjOTVmNiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.6qwsjHE_Gil15HR_4xhJgV8U6PDXpKOetblNIKQJdrk',
-        'accept': 'application/json',
-      },
-    );
-    var json = jsonDecode(response.body);
-
-    return RealeseModel.fromJson(json);
-  }
-
-   OnSaved(RealeseResults movie) {
-    movie.isSaved =!movie.isSaved;
-    print('isSaved: ${movie.isSaved}');
-  notifyListeners();
-  }
-
-  OnSavedRecommendation(RecommendationResults movie) {
-    movie.isSavedRecomm =! movie.isSavedRecomm;
-    print('isSaved: ${movie.isSavedRecomm}');
-  notifyListeners();
-  }
-  List<BrowseGenres> browsecategore =[];
 
 
- Future<RecommendationModel> getRecommendation()async {
-
-    Uri url = Uri.parse("https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1");
-
-    http.Response response = await http.get(url,
-      headers: {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4ZWIzYTg2ZTdjNTQ2ZjVmMGRmYTVmNjM0MWRkMGMwYyIsIm5iZiI6MTcyNjA2OTAyNC43ODEwOTQsInN1YiI6IjY2ZTFiNmRhZTNmNGYyMTQwY2NjOTVmNiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.6qwsjHE_Gil15HR_4xhJgV8U6PDXpKOetblNIKQJdrk',
-        'accept': 'application/json',
-      },
-    );
-    var json = jsonDecode(response.body);
-
-    return RecommendationModel.fromJson(json);
-  }
-
-
-Future<Detailsmodel> getDetails(int movieId)async {
-
-    Uri url = Uri.parse("https://api.themoviedb.org/3/movie/$movieId?language=en-US&api_key=8eb3a86e7c546f5f0dfa5f6341dd0c0c");
-
-    http.Response response = await http.get(url,
-      headers: {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4ZWIzYTg2ZTdjNTQ2ZjVmMGRmYTVmNjM0MWRkMGMwYyIsIm5iZiI6MTcyNjA2OTAyNC43ODEwOTQsInN1YiI6IjY2ZTFiNmRhZTNmNGYyMTQwY2NjOTVmNiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.6qwsjHE_Gil15HR_4xhJgV8U6PDXpKOetblNIKQJdrk',
-        'accept': 'application/json',
-      },
-    );
-    var json = jsonDecode(response.body);
-
-    return Detailsmodel.fromJson(json);
-  }
-  Future<MorelikethisModel> getMoreLikeThis(int movieId)async {
-
-    Uri url = Uri.parse("https://api.themoviedb.org/3/movie/$movieId/similar?language=en-US&page=1&api_key=8eb3a86e7c546f5f0dfa5f6341dd0c0c");
-
-    http.Response response = await http.get(url,
-      headers: {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4ZWIzYTg2ZTdjNTQ2ZjVmMGRmYTVmNjM0MWRkMGMwYyIsIm5iZiI6MTcyNjA2OTAyNC43ODEwOTQsInN1YiI6IjY2ZTFiNmRhZTNmNGYyMTQwY2NjOTVmNiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.6qwsjHE_Gil15HR_4xhJgV8U6PDXpKOetblNIKQJdrk',
-        'accept': 'application/json',
-      },
-    );
-    var json = jsonDecode(response.body);
-
-    return MorelikethisModel.fromJson(json);
-  }
- Future<MoviesSearch> movieSearch(String query)async {
-
-    Uri url = Uri.parse("https://api.themoviedb.org/3/search/movie?query=$query&include_adult=false&language=en-US&page=1");
-
-    http.Response response = await http.get(url,
-      headers: {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4ZWIzYTg2ZTdjNTQ2ZjVmMGRmYTVmNjM0MWRkMGMwYyIsIm5iZiI6MTcyNjA2OTAyNC43ODEwOTQsInN1YiI6IjY2ZTFiNmRhZTNmNGYyMTQwY2NjOTVmNiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.6qwsjHE_Gil15HR_4xhJgV8U6PDXpKOetblNIKQJdrk',
-        'accept': 'application/json',
-      },
-    );
-    var json = jsonDecode(response.body);
-
-    return MoviesSearch.fromJson(json);
-  }
-
-  Future<BrowseCategories> getBrowesCategories()async {
-    Uri url =Uri.parse("https://api.themoviedb.org/3/genre/movie/list?language=en");
-    http.Response response = await http.get(url,
-      headers: {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4ZWIzYTg2ZTdjNTQ2ZjVmMGRmYTVmNjM0MWRkMGMwYyIsIm5iZiI6MTcyNjA2OTAyNC43ODEwOTQsInN1YiI6IjY2ZTFiNmRhZTNmNGYyMTQwY2NjOTVmNiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.6qwsjHE_Gil15HR_4xhJgV8U6PDXpKOetblNIKQJdrk',
-        'accept': 'application/json',
-      },
-    );
-    var json = jsonDecode(response.body);
-
-    return BrowseCategories.fromJson(json);
-  }
 
   Future<void> getBrowse()async{
-   var date =await getBrowesCategories();
+   var date =await ApiManger.getBrowesCategories();
    browsecategore = date.genres??[];
    notifyListeners();
+  }
+
+
+
+  void OnSavedRecommendation(RecommendationResults movie) {
+    movie.isSavedRecomm = !movie.isSavedRecomm;
+    notifyListeners();
+
+    if (movie.isSavedRecomm) {
+      FirebaseFunctions.saveRecommendationToFirebase(movie);
+    }
+  }
+
+
+
+// الجزء الخاص بحفظ ال movie
+///////////////////////////////////////
+  void OnSavedRealease(RealeseResults movie) {
+    notifyListeners();
+
+    if (movie.isSaved) {
+      FirebaseFunctions.saveRealaeseToFirebase(movie);
+    }
+  }
+  void toggleWatched(int movieId) {
+    watchedMovies[movieId] = !(watchedMovies[movieId] ?? false);
+    notifyListeners();
+  }
+
+  bool isWatched(int movieId) {
+    return watchedMovies[movieId] ?? false;
+  }
+///////////////////////////////////////////
+
+  Future<void> SavedMovies() async {
+    savedmovie= await FirebaseFunctions.getSavedMovies();
+    notifyListeners();
+  }
+
+
+
+
+
+  Future<void> getMoive() async {
+    try {
+      savedmovie = await FirebaseFunctions.getSavedMovies();
+      notifyListeners();
+    } catch (e) {
+      print("Error fetching saved movies: $e");
+    }
+  }
+
+
+
+
+  Future<void> getRecommendationMovie()async{
+   var data =await ApiManger.getRecommendation();
+   recommendationMovie =data.results!;
+   notifyListeners();
+  }
+
+
+
+  Future<void> getCatMovie()async{
+    var data =await ApiManger.getBrowesMovies();
+    browsemovieresult =data.results??[];
+    notifyListeners();
   }
 
 

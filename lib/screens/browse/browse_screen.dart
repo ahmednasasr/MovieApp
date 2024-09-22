@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movieapp/manger/main_provider.dart';
+import 'package:movieapp/screens/browse/category_movies.dart';
 import 'package:provider/provider.dart';
 
 class BrowseScreen extends StatefulWidget {
@@ -49,13 +50,18 @@ class _BrowseScreenState extends State<BrowseScreen> {
                 print(provider.browsecategore.length);
                 return Stack(
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        image: DecorationImage(
-                          image: AssetImage(
-                              "assets/images/0e34a5e080e8c915030603ddcdb4eeba.png"),
-                          fit: BoxFit.cover,
+                    InkWell(
+                      onTap: (){
+                        Navigator.pushNamed(context, CategoryMovies.routename);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          image: DecorationImage(
+                            image: AssetImage(
+                                "assets/images/0e34a5e080e8c915030603ddcdb4eeba.png"),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),

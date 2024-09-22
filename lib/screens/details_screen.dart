@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:movieapp/apis/api_manger.dart';
 import 'package:movieapp/manger/main_provider.dart';
 import 'package:movieapp/models/morelikethis_model.dart';
 import 'package:movieapp/models/movie_header_model.dart';
@@ -8,6 +9,7 @@ import 'package:movieapp/models/realese_model.dart';
 import 'package:movieapp/models/recommendation_model.dart';
 import 'package:provider/provider.dart';
 
+import '../models/browse_movies.dart';
 import '../models/movies_search.dart';
 import 'details_details_screen.dart';
 
@@ -43,6 +45,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
       movieId = arguments.id as int?;
       title = arguments.title;
     }
+    else if (arguments is browseMoviesResult) {
+      movieId = arguments.id as int?;
+      title = arguments.title;
+    }
 
     if (movieId == null) {
       return Scaffold(
@@ -61,7 +67,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
       ),
       body: SingleChildScrollView(
         child: FutureBuilder(
-          future: provider.getDetails(movieId),
+          future: ApiManger.getDetails(movieId),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -184,7 +190,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           ],
                         ),
                         FutureBuilder<MorelikethisModel>(
-                            future: provider.getMoreLikeThis(movieId!),
+                            future: ApiManger.getMoreLikeThis(movieId!),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState == ConnectionState.waiting) {
                                 return const Center(child: CircularProgressIndicator());

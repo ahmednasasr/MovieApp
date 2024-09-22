@@ -3,18 +3,29 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:movieapp/apis/api_manger.dart';
 import 'package:movieapp/manger/main_provider.dart';
 import 'package:movieapp/models/movie_header_model.dart';
 import 'package:movieapp/models/recommendation_model.dart';
 import 'package:movieapp/screens/details_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../models/realese_model.dart';
+import '../../models/realese_model.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
 
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    final provider = Provider.of<mainProvider>(context, listen: false);
+    provider.getRecommendationMovie();
+  }
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<mainProvider>(context);
@@ -23,7 +34,7 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           children: [
             FutureBuilder<MovieHeaders>(
-              future: provider.getPopular(),
+              future: ApiManger.getPopular(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -33,7 +44,7 @@ class HomeScreen extends StatelessWidget {
                   List<Results> results = snapshot.data?.results ?? [];
                   return CarouselSlider(
                     options: CarouselOptions(
-                      autoPlay:true,
+                      autoPlay: true,
                       height: 340.0,
                       viewportFraction: 1.0,
                       enableInfiniteScroll: true,
@@ -43,8 +54,10 @@ class HomeScreen extends StatelessWidget {
                       return Builder(
                         builder: (BuildContext context) {
                           return InkWell(
-                            onTap: (){
-                              Navigator.pushNamed(context, DetailsScreen.routename,arguments: movie);
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, DetailsScreen.routename,
+                                  arguments: movie);
                             },
                             child: Container(
                                 child: Column(children: [
@@ -80,10 +93,11 @@ class HomeScreen extends StatelessWidget {
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: CachedNetworkImage(
-                                        imageUrl: "https://image.tmdb.org/t/p/w500${movie.posterPath}",
-                                        errorWidget: (context, url, error) => Icon(Icons.error),
+                                        imageUrl:
+                                            "https://image.tmdb.org/t/p/w500${movie.posterPath}",
+                                        errorWidget: (context, url, error) =>
+                                            Icon(Icons.error),
                                       ),
-
                                     ),
                                   ),
                                 ],
@@ -125,7 +139,7 @@ class HomeScreen extends StatelessWidget {
               height: 10,
             ),
             FutureBuilder<RealeseModel>(
-              future: provider.getRealese(),
+              future: ApiManger.getRealese(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -159,33 +173,37 @@ class HomeScreen extends StatelessWidget {
                           return Builder(
                             builder: (BuildContext context) {
                               return InkWell(
-                                onTap: (){
-                                  Navigator.pushNamed(context, DetailsScreen.routename,arguments: movie);
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                      context, DetailsScreen.routename,
+                                      arguments: movie);
                                 },
                                 child: Container(
                                     color: Color(0xff282A28),
                                     child: Column(children: [
-                                      Stack(
-                                          clipBehavior: Clip.none,
-                                          children: [
+                                      Stack(clipBehavior: Clip.none, children: [
                                         Container(
                                           width: double.infinity,
                                           height: 180,
-                                        child: CachedNetworkImage(
-                                          imageUrl:"https://image.tmdb.org/t/p/w500${movie.posterPath ?? ''}",
-                                          errorWidget: (context, url, error) => Icon(Icons.error),
-                                        ),
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                                "https://image.tmdb.org/t/p/w500${movie.posterPath ?? ''}",
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Icon(Icons.error),
+                                          ),
                                         ),
                                         InkWell(
                                           onTap: () {
-                                            provider.OnSaved(movie);
+                                            provider.OnSavedRealease(movie);
+                                            provider.toggleWatched(movie.id!);
                                           },
                                           child: Icon(
-                                            movie.isSaved
+                                            provider.isWatched(movie.id!)
                                                 ? Icons.bookmark
                                                 : Icons.add_box,
                                             size: 25,
-                                            color: movie.isSaved
+                                            color:  provider.isWatched(movie.id!)
                                                 ? Colors.yellow
                                                 : Color(0xff514F4F),
                                           ),
@@ -206,7 +224,7 @@ class HomeScreen extends StatelessWidget {
             ),
             SizedBox(height: 10),
             FutureBuilder<RecommendationModel>(
-                future: provider.getRecommendation(),
+                future: ApiManger.getRecommendation(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
@@ -258,15 +276,16 @@ class HomeScreen extends StatelessWidget {
                                           ),
                                           InkWell(
                                             onTap: () {
+                                              provider.toggleWatched(e.id!);
                                               provider.OnSavedRecommendation(e);
-                                              print(e.id);
                                             },
                                             child: Icon(
-                                              e.isSavedRecomm
+                                              provider.isWatched(e.id!)
                                                   ? Icons.bookmark
                                                   : Icons.add_box,
                                               size: 25,
-                                              color: e.isSavedRecomm
+                                              color:
+                                              provider.isWatched(e.id!)
                                                   ? Colors.yellow
                                                   : Color(0xff514F4F),
                                             ),
@@ -311,6 +330,7 @@ class HomeScreen extends StatelessWidget {
                     return const Center(child: Text("No data available"));
                   }
                 })
+
           ],
         ),
       ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movieapp/screens/layout_screen.dart';
+import 'package:movieapp/screens/home/layout_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   static const String routename="splash";

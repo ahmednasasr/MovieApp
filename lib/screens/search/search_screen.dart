@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movieapp/search/movie_search_delegate.dart';
 
-import '../models/movies_search.dart';
+import '../../models/movies_search.dart';
 
 
 class SearchScreen extends StatelessWidget {
